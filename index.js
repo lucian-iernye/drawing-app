@@ -98,7 +98,7 @@ context.stroke();
       paint_erase = "paint";
     }
     $(this).toggleClass("eraseMode");
-    $(this).text($(this).text() == "Erase" ? "Paint" : "Erase");
+    $(this).text($(this).text() === "Erase" ? "Paint" : "Erase");
   });
 
   // click on the save button
