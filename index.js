@@ -1,13 +1,4 @@
 $(function () {
-  $("#slider").slider({
-    min: 3,
-    max: 30,
-    slide: function (event, ui) {
-      $("#circle").height(ui.value);
-      $("#circle").width(ui.value);
-    },
-  });
-
   /* ----------- example of drawing into canvas------------
 let canvas = document.getElementById("paint");
 let context = canvas.getContext("2d");
@@ -50,6 +41,13 @@ context.stroke();
   };
 
   //   onload load saved work from local strorage
+  if (localStorage.getItem("imgCanvas") !== null) {
+    let img = new Image();
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = localStorage.getItem("imgCanvas");
+  }
 
   // set drawing parameters (lineWidth, lineJoin, lineCap)
   ctx.lineWidth = 3;
@@ -72,7 +70,7 @@ context.stroke();
     if (paint === true) {
       if (paint_erase === "paint") {
         // get color input
-        ctx.strokeStyle = "red";
+        ctx.strokeStyle = $("#paint-color").val();
       } else {
         // color will be white
         ctx.strokeStyle = "white";
@@ -103,11 +101,33 @@ context.stroke();
   });
 
   // click on the save button
-  localStorage =
-    // click on the reset button
-    $("#reset").click(function () {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      paint_erase = "paint";
-      $("#erase").removeClass("eraseMode");
-    });
+  $("#save").click(function () {
+    if (typeof localStorage !== null) {
+      localStorage.setItem("imgCanvas", canvas.toDataURL());
+    } else {
+      window.alert("Your browser does not support local storage!");
+    }
+  });
+  // click on the reset button
+  $("#reset").click(function () {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    paint_erase = "paint";
+    $("#erase").removeClass("eraseMode");
+  });
+
+  // change color input
+  $("#paint-color").change(function () {
+    $("#circle").css("background-color", $(this).val());
+  });
+
+  // change lineWidth using slider
+  $("#slider").slider({
+    min: 3,
+    max: 30,
+    slide: function (event, ui) {
+      $("#circle").height(ui.value);
+      $("#circle").width(ui.value);
+      ctx.lineWidth = ui.value;
+    },
+  });
 });
